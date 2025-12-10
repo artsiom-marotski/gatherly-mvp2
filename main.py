@@ -55,3 +55,4 @@ def create_app():
 def setup_database(app):
     with app.app_context():
         init_db()
+app = create_app()
