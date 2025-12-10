@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Gatherly{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-4">Найдите своё следующее мероприятие</h1>
+        <p class="lead mb-4">Откройте для себя лучшие события в вашем городе</p>
+        <div class="d-flex gap-3 justify-content-center">
+            <a href="{{ url_for('events.events_list') }}" class="btn btn-light btn-lg">Найти мероприятия</a>
+            {% if current_user.is_authenticated and current_user.is_organizer %}
+            <a href="{{ url_for('events.create_event') }}" class="btn btn-outline-light btn-lg">Создать мероприятие</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="container mb-5">
+    <div class="card shadow">
+        <div class="card-body">
+            <form action="{{ url_for('events.events_list') }}" method="GET" class="row g-3">
+                <div class="col-md-8">
+                    <input type="text" name="search" class="form-control" placeholder="Поиск мероприятий...">
+                </div>
+                <div class="col-md-2">
+                    <select name="category" class="form-select">
+                        <option value="all">Все категории</option>
+                        <option value="Концерт">Концерт</option>
+                        <option value="Мастер-класс">Мастер-класс</option>
+                        <option value="Спорт">Спорт</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Найти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="container">
+    <h2 class="mb-4">Популярные мероприятия</h2>
+    
+    <div class="row" id="events-container">
+        <div class="col-12 text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Загрузка...</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-center mt-4">
+        <a href="{{ url_for('events.events_list') }}" class="btn btn-outline-primary">Все мероприятия</a>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    fetch('/api/events')
+        .then(r => r.json())
+        .then(events => {
+            const container = document.getElementById('events-container');
+            container.innerHTML = '';
+            
+            events.slice(0, 6).forEach(event => {
+                const card = `
+                <div class="col-md-4 mb-4">
+                    <div class="card event-card h-100 shadow">
+                        <div class="position-relative">
+                            <img src="${event.image_url}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                            <span class="category-badge">${event.category}</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">${event.title}</h5>
+                            <p class="card-text">${event.description}</p>
+                            <p class="mb-2">📍 ${event.location}</p>
+                            <p class="mb-3">💰 ${event.price} руб.</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/events/${event.id}" class="btn btn-primary w-100">Подробнее</a>
+                        </div>
+                    </div>
+                </div>`;
+                container.innerHTML += card;
+            });
+        });
+</script>
+{% endblock %}
