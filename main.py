@@ -1,7 +1,7 @@
 from flask import Flask, render_template, Blueprint
 from flask_login import LoginManager, current_user
 
-from .database import db, init_db, User
+from app.database import db, init_db, User
 from .auth import auth_bp
 from .events import events_bp
 
