@@ -1,12 +1,15 @@
 # Основные библиотеки Flask
 Flask>=2.3.0
 Werkzeug>=2.3.0  # Явно указываем совместимую версию
+python-dotenv>=1.0.0
 
 # Критические обновления для совместимости с Werkzeug 3.x
 Flask-Login>=0.6.3      # Решает проблему с url_decode
 Flask-WTF>=1.1.0        # Решает проблему с url_encode
 WTForms>=3.0.0          # Часто требуется для Flask-WTF
 Flask-SQLAlchemy>=3.0.0
+psycopg2-binary>=2.9.0  # Драйвер для PostgreSQL
+
 # Ваши остальные зависимости (оставьте как есть)
 gunicorn==20.1.0
 # ... другие ваши библиотеки ...
